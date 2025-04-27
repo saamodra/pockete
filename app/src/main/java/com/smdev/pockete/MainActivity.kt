@@ -15,7 +15,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.smdev.pockete.data.TemplateDatabase
+import com.smdev.pockete.data.AppDatabase
 import com.smdev.pockete.data.TemplateRepository
 import com.smdev.pockete.ui.TemplateViewModel
 import com.smdev.pockete.ui.TemplateViewModelFactory
@@ -45,7 +45,7 @@ fun TemplateApp() {
     val viewModel: TemplateViewModel = viewModel(
         factory = TemplateViewModelFactory(
             TemplateRepository(
-                TemplateDatabase.getDatabase(androidx.compose.ui.platform.LocalContext.current)
+                AppDatabase.getDatabase(androidx.compose.ui.platform.LocalContext.current)
                     .templateDao()
             )
         )

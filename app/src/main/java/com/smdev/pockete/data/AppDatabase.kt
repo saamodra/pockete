@@ -5,20 +5,28 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 
-@Database(entities = [Template::class], version = 1, exportSchema = false)
-abstract class TemplateDatabase : RoomDatabase() {
+@Database(
+    entities = [
+        Template::class,
+        Category::class,
+        TemplateCategory::class
+    ],
+    version = 1
+)
+abstract class AppDatabase : RoomDatabase() {
     abstract fun templateDao(): TemplateDao
+    abstract fun categoryDao(): CategoryDao
 
     companion object {
         @Volatile
-        private var INSTANCE: TemplateDatabase? = null
+        private var INSTANCE: AppDatabase? = null
 
-        fun getDatabase(context: Context): TemplateDatabase {
+        fun getDatabase(context: Context): AppDatabase {
             return INSTANCE ?: synchronized(this) {
                 val instance = Room.databaseBuilder(
                     context.applicationContext,
-                    TemplateDatabase::class.java,
-                    "template_database"
+                    AppDatabase::class.java,
+                    "pockete_database"
                 ).build()
                 INSTANCE = instance
                 instance
