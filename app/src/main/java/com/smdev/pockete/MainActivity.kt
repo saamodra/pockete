@@ -8,9 +8,19 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavDestination.Companion.hierarchy
@@ -49,24 +59,35 @@ class MainActivity : ComponentActivity() {
 
 sealed class Screen(val route: String, val icon: @Composable () -> Unit, val label: String) {
     object Home : Screen("home", { Icon(Icons.Default.Home, contentDescription = "Home") }, "Home")
-    object Categories : Screen("categories", { Icon(painter = painterResource(id = R.drawable.baseline_category_24), contentDescription = "Categories") }, "Categories")
-    object More : Screen("more", { Icon(Icons.Default.MoreVert, contentDescription = "More") }, "More")
+    object Categories : Screen(
+        "categories",
+        {
+            Icon(
+                painter = painterResource(id = R.drawable.baseline_category_24),
+                contentDescription = "Categories"
+            )
+        },
+        "Categories"
+    )
+    object More :
+        Screen("more", { Icon(Icons.Default.MoreVert, contentDescription = "More") }, "More")
 }
 
 @Composable
 fun TemplateApp() {
     val navController = rememberNavController()
+    val database = AppDatabase.getDatabase(LocalContext.current)
     val templateViewModel: TemplateViewModel = viewModel(
         factory = TemplateViewModelFactory(
             TemplateRepository(
-                AppDatabase.getDatabase(androidx.compose.ui.platform.LocalContext.current)
-                    .templateDao()
+                templateDao = database.templateDao(),
+                templateCategoryDao = database.templateCategoryDao()
             )
         )
     )
     val categoryViewModel: CategoryViewModel = viewModel(
         factory = CategoryViewModelFactory(
-            AppDatabase.getDatabase(androidx.compose.ui.platform.LocalContext.current)
+            AppDatabase.getDatabase(LocalContext.current)
                 .categoryDao()
         )
     )
@@ -129,9 +150,11 @@ fun TemplateApp() {
                 Text("More Screen")
             }
             composable("edit") {
+                val allCategories by categoryViewModel.categories.collectAsState()
                 TemplateEditScreen(
-                    onSave = { title, content ->
-                        templateViewModel.addTemplate(title, content)
+                    categories = allCategories,
+                    onSave = { title, content, selectedCategories ->
+                        templateViewModel.addTemplate(title, content, selectedCategories)
                     },
                     onNavigateBack = { navController.popBackStack() }
                 )
@@ -139,16 +162,21 @@ fun TemplateApp() {
             composable("edit/{templateId}") { backStackEntry ->
                 val templateId = backStackEntry.arguments?.getString("templateId")?.toLongOrNull()
                 val uiState by templateViewModel.uiState.collectAsState()
+                val allCategories by categoryViewModel.categories.collectAsState()
 
                 LaunchedEffect(templateId) {
                     templateId?.let { templateViewModel.fetchTemplateById(it) }
                 }
 
                 TemplateEditScreen(
-                    template = uiState.currentTemplate,
-                    onSave = { title, content ->
+                    templateWithCategories = uiState.currentTemplate,
+                    categories = allCategories,
+                    onSave = { title, content, selectedCategories ->
                         uiState.currentTemplate?.let {
-                            templateViewModel.updateTemplate(it.copy(title = title, content = content))
+                            templateViewModel.updateTemplate(
+                                it.template.copy(title = title, content = content),
+                                selectedCategories
+                            )
                         }
                     },
                     onNavigateBack = { navController.popBackStack() }
