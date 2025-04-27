@@ -21,7 +21,7 @@ interface CategoryDao {
     suspend fun deleteCategory(category: Category)
 
     @Query("SELECT * FROM categories c INNER JOIN template_categories tc ON c.id = tc.categoryId WHERE tc.templateId = :templateId")
-    fun getCategoriesForTemplate(templateId: Long): Flow<List<Category>>
+    suspend fun getCategoriesForTemplate(templateId: Long): List<Category>
 
     @Insert
     suspend fun insertTemplateCategory(templateCategory: TemplateCategory)

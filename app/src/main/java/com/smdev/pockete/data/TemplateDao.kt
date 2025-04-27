@@ -5,6 +5,7 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Transaction
 import androidx.room.Update
 import kotlinx.coroutines.flow.Flow
 
@@ -14,7 +15,7 @@ interface TemplateDao {
     fun getAllTemplates(): Flow<List<Template>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertTemplate(template: Template)
+    suspend fun insertTemplate(template: Template): Long
 
     @Update
     suspend fun updateTemplate(template: Template)
@@ -24,4 +25,8 @@ interface TemplateDao {
 
     @Query("SELECT * FROM templates WHERE id = :id")
     suspend fun getTemplateById(id: Long): Template?
+
+    @Transaction
+    @Query("SELECT * FROM templates WHERE id = :templateId")
+    suspend fun getTemplateWithCategories(templateId: Long): TemplateWithCategories?
 }

@@ -16,16 +16,4 @@ class CategoryRepository(private val categoryDao: CategoryDao) {
     suspend fun deleteCategory(category: Category) {
         categoryDao.deleteCategory(category)
     }
-
-    fun getCategoriesForTemplate(templateId: Long): Flow<List<Category>> {
-        return categoryDao.getCategoriesForTemplate(templateId)
-    }
-
-    suspend fun addCategoryToTemplate(templateId: Long, categoryId: Long) {
-        categoryDao.insertTemplateCategory(TemplateCategory(templateId, categoryId))
-    }
-
-    suspend fun removeCategoryFromTemplate(templateId: Long, categoryId: Long) {
-        categoryDao.deleteTemplateCategory(TemplateCategory(templateId, categoryId))
-    }
 }

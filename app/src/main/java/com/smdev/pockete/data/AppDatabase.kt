@@ -16,6 +16,7 @@ import androidx.room.RoomDatabase
 abstract class AppDatabase : RoomDatabase() {
     abstract fun templateDao(): TemplateDao
     abstract fun categoryDao(): CategoryDao
+    abstract fun templateCategoryDao(): TemplateCategoryDao
 
     companion object {
         @Volatile

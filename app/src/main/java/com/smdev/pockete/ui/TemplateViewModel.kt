@@ -7,13 +7,21 @@ import android.content.Intent
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.smdev.pockete.data.Category
 import com.smdev.pockete.data.Template
 import com.smdev.pockete.data.TemplateRepository
+import com.smdev.pockete.data.TemplateWithCategories
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+
+data class TemplateUiState(
+    val currentTemplate: TemplateWithCategories? = null,
+    val templates: List<Template> = emptyList(),
+    val isEditing: Boolean = false
+)
 
 class TemplateViewModel(private val repository: TemplateRepository) : ViewModel() {
     private val TAG = "TemplateViewModel"
@@ -35,11 +43,11 @@ class TemplateViewModel(private val repository: TemplateRepository) : ViewModel(
         }
     }
 
-    fun fetchTemplateById(id: Long) {
+    fun fetchTemplateById(templateId: Long) {
         viewModelScope.launch {
-            Log.d(TAG, "Fetching template by id: $id")
-            val template = repository.getTemplateById(id)
-            Log.d(TAG, "Fetched template: ${template?.title}")
+            Log.d(TAG, "Fetching template by id: $templateId")
+            val template = repository.getTemplateById(templateId)
+            Log.d(TAG, "Fetched template: ${template?.template?.title}")
             _uiState.update { currentState ->
                 currentState.copy(
                     currentTemplate = template,
@@ -58,18 +66,32 @@ class TemplateViewModel(private val repository: TemplateRepository) : ViewModel(
         }
     }
 
-    fun addTemplate(title: String, content: String) {
+    fun addTemplate(title: String, content: String, categories: List<Category>) {
         Log.d(TAG, "Adding new template: $title")
         viewModelScope.launch {
-            repository.insertTemplate(Template(title = title, content = content))
+            val templateId = repository.insertTemplate(Template(title = title, content = content))
+            categories.forEach { category ->
+                repository.addCategoryToTemplate(templateId, category.id)
+            }
             clearCurrentTemplate()
         }
     }
 
-    fun updateTemplate(template: Template) {
+    fun updateTemplate(template: Template, categories: List<Category>) {
         Log.d(TAG, "Updating template: ${template.title}")
         viewModelScope.launch {
             repository.updateTemplate(template)
+            val currentCategoryIds = repository.getCategoryIdsForTemplate(template.id)
+            val newCategoryIds = categories.map { it.id }
+
+            currentCategoryIds.filter { it !in newCategoryIds }.forEach { categoryId ->
+                repository.removeCategoryFromTemplate(template.id, categoryId)
+            }
+
+            newCategoryIds.filter { it !in currentCategoryIds }.forEach { categoryId ->
+                repository.addCategoryToTemplate(template.id, categoryId)
+            }
+
             clearCurrentTemplate()
         }
     }
@@ -97,9 +119,3 @@ class TemplateViewModel(private val repository: TemplateRepository) : ViewModel(
         context.startActivity(Intent.createChooser(shareIntent, "Share Template"))
     }
 }
-
-data class TemplateUiState(
-    val templates: List<Template> = emptyList(),
-    val currentTemplate: Template? = null,
-    val isEditing: Boolean = false
-)
