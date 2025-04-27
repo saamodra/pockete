@@ -38,11 +38,11 @@ import com.smdev.pockete.data.TemplateWithCategories
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TemplateEditScreen(
+    modifier: Modifier = Modifier,
     templateWithCategories: TemplateWithCategories? = null,
     categories: List<Category> = emptyList(),
     onSave: (String, String, List<Category>) -> Unit,
-    onNavigateBack: () -> Unit,
-    modifier: Modifier = Modifier
+    onNavigateBack: () -> Unit
 ) {
     var title by remember(templateWithCategories) {
         mutableStateOf(
@@ -149,10 +149,10 @@ fun TemplateEditScreen(
 
 @Composable
 fun CategoryTag(
+    modifier: Modifier = Modifier,
     category: Category,
     onClick: (() -> Unit)? = null,
     onRemove: (() -> Unit)? = null,
-    modifier: Modifier = Modifier
 ) {
     Surface(
         modifier = modifier,

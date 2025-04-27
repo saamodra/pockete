@@ -21,7 +21,7 @@ fun CategoryEditScreen(
     modifier: Modifier = Modifier
 ) {
     var name by remember { mutableStateOf(category?.name ?: "") }
-    var color by remember { mutableStateOf(category?.color ?: Color.Blue.toArgb()) }
+    var color by remember { mutableIntStateOf(category?.color ?: Color.Blue.toArgb()) }
 
     Scaffold(
         topBar = {

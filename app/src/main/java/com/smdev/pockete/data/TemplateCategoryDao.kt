@@ -1,7 +1,6 @@
 package com.smdev.pockete.data
 
 import androidx.room.*
-import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface TemplateCategoryDao {

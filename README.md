@@ -32,9 +32,9 @@ Pockete is an Android application for storing text template built with modern An
 ### Installation
 
 1. Clone the repository:
-```bash
-git clone https://github.com/saamodra/pockete.git
-```
+    ```bash
+    git clone https://github.com/saamodra/pockete.git
+    ```
 
 2. Open the project in Android Studio
 

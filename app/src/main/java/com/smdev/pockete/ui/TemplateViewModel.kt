@@ -5,6 +5,7 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.smdev.pockete.data.Category
@@ -108,6 +109,7 @@ class TemplateViewModel(private val repository: TemplateRepository) : ViewModel(
         val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         val clip = ClipData.newPlainText("template", text)
         clipboard.setPrimaryClip(clip)
+        Toast.makeText(context, "$text copied to clipboard", Toast.LENGTH_SHORT).show()
     }
 
     fun shareTemplate(context: Context, text: String) {
