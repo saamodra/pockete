@@ -14,6 +14,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
@@ -26,6 +27,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -36,7 +39,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.smdev.pockete.R
 import com.smdev.pockete.data.Template
@@ -52,11 +54,64 @@ fun TemplateListScreen(
     val context = LocalContext.current
     var showDeleteDialog by remember { mutableStateOf<Template?>(null) }
     val uiState by viewModel.uiState.collectAsState()
+    var searchQuery by remember { mutableStateOf("") }
+    var isSearchActive by remember { mutableStateOf(false) }
+
+    val filteredTemplates = remember(uiState.templates, searchQuery) {
+        if (searchQuery.isBlank()) {
+            uiState.templates
+        } else {
+            uiState.templates.filter { template ->
+                template.title.contains(searchQuery, ignoreCase = true) ||
+                        template.content.contains(searchQuery, ignoreCase = true)
+            }
+        }
+    }
 
     Scaffold(
+        topBar = {
+            TopAppBar(
+                title = {
+                    if (isSearchActive) {
+                        TextField(
+                            value = searchQuery,
+                            onValueChange = { searchQuery = it },
+                            modifier = Modifier.fillMaxWidth(),
+                            placeholder = { Text("Search templates...") },
+                            singleLine = true,
+                            colors = TextFieldDefaults.colors(
+                                focusedContainerColor = MaterialTheme.colorScheme.surface,
+                                unfocusedContainerColor = MaterialTheme.colorScheme.surface
+                            )
+                        )
+                    } else {
+                        Text("Templates")
+                    }
+                },
+                actions = {
+                    if (isSearchActive) {
+                        IconButton(onClick = {
+                            searchQuery = ""
+                            isSearchActive = false
+                        }) {
+                            Icon(Icons.Default.Search, contentDescription = "Close Search")
+                        }
+                    } else {
+                        IconButton(onClick = { isSearchActive = true }) {
+                            Icon(Icons.Default.Search, contentDescription = "Search")
+                        }
+                        IconButton(onClick = onAddTemplate) {
+                            Icon(Icons.Default.Add, contentDescription = "Add Template")
+                        }
+                    }
+                }
+            )
+        },
         floatingActionButton = {
-            FloatingActionButton(onClick = onAddTemplate) {
-                Icon(Icons.Default.Add, contentDescription = "Add Template")
+            if (!isSearchActive) {
+                FloatingActionButton(onClick = onAddTemplate) {
+                    Icon(Icons.Default.Add, contentDescription = "Add Template")
+                }
             }
         }
     ) { padding ->
@@ -65,7 +120,7 @@ fun TemplateListScreen(
                 .fillMaxSize()
                 .padding(padding)
         ) {
-            items(uiState.templates) { template ->
+            items(filteredTemplates) { template ->
                 TemplateItem(
                     template = template,
                     onCopy = { viewModel.copyToClipboard(context, template.content) },
@@ -99,21 +154,6 @@ fun TemplateListScreen(
             }
         )
     }
-}
-
-
-@Preview
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun TopBar() {
-    TopAppBar(
-        title = { Text("Templates") },
-        actions = {
-            IconButton(onClick = { /* TODO: Add action */ }) {
-                Icon(Icons.Default.Add, contentDescription = "Add Template")
-            }
-        }
-    )
 }
 
 @Composable
