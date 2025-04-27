@@ -25,6 +25,8 @@ fun CategoryListScreen(
     onDeleteCategory: (Category) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    var showDeleteDialog by remember { mutableStateOf<Category?>(null) }
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -37,18 +39,43 @@ fun CategoryListScreen(
             )
         }
     ) { padding ->
-        LazyColumn(
-            modifier = modifier
-                .fillMaxSize()
-                .padding(padding)
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            items(categories) { category ->
-                CategoryItem(
-                    category = category,
-                    onEdit = { onEditCategory(category) },
-                    onDelete = { onDeleteCategory(category) }
+        Box(modifier = Modifier.fillMaxSize()) {
+            LazyColumn(
+                modifier = modifier
+                    .fillMaxSize()
+                    .padding(padding)
+                    .padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                items(categories) { category ->
+                    CategoryItem(
+                        category = category,
+                        onEdit = { onEditCategory(category) },
+                        onDelete = { showDeleteDialog = category }
+                    )
+                }
+            }
+
+            if (showDeleteDialog != null) {
+                AlertDialog(
+                    onDismissRequest = { showDeleteDialog = null },
+                    title = { Text("Delete Category") },
+                    text = { Text("Are you sure you want to delete this category?") },
+                    confirmButton = {
+                        TextButton(
+                            onClick = {
+                                showDeleteDialog?.let { onDeleteCategory(it) }
+                                showDeleteDialog = null
+                            }
+                        ) {
+                            Text("Delete")
+                        }
+                    },
+                    dismissButton = {
+                        TextButton(onClick = { showDeleteDialog = null }) {
+                            Text("Cancel")
+                        }
+                    }
                 )
             }
         }
