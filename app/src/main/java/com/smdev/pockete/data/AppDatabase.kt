@@ -4,25 +4,27 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.migration.Migration
+import androidx.sqlite.db.SupportSQLiteDatabase
 import com.smdev.pockete.data.dao.CategoryDao
-import com.smdev.pockete.data.dao.TemplateCategoryDao
-import com.smdev.pockete.data.dao.TemplateDao
+import com.smdev.pockete.data.dao.WalletCategoryDao
+import com.smdev.pockete.data.dao.WalletDao
 import com.smdev.pockete.data.model.Category
-import com.smdev.pockete.data.model.Template
-import com.smdev.pockete.data.model.TemplateCategory
+import com.smdev.pockete.data.model.Wallet
+import com.smdev.pockete.data.model.WalletCategory
 
 @Database(
     entities = [
-        Template::class,
+        Wallet::class,
         Category::class,
-        TemplateCategory::class
+        WalletCategory::class
     ],
-    version = 1
+    version = 2
 )
 abstract class AppDatabase : RoomDatabase() {
-    abstract fun templateDao(): TemplateDao
+    abstract fun walletDao(): WalletDao
     abstract fun categoryDao(): CategoryDao
-    abstract fun templateCategoryDao(): TemplateCategoryDao
+    abstract fun walletCategoryDao(): WalletCategoryDao
 
     companion object {
         @Volatile
@@ -34,7 +36,9 @@ abstract class AppDatabase : RoomDatabase() {
                     context.applicationContext,
                     AppDatabase::class.java,
                     "pockete_database"
-                ).build()
+                )
+                    .fallbackToDestructiveMigration(true)
+                .build()
                 INSTANCE = instance
                 instance
             }

@@ -4,14 +4,14 @@ import androidx.room.Embedded
 import androidx.room.Junction
 import androidx.room.Relation
 
-data class TemplateWithCategories(
-    @Embedded val template: Template,
+data class WalletWithCategories(
+    @Embedded val wallet: Wallet,
     @Relation(
         parentColumn = "id",
         entityColumn = "id",
         associateBy = Junction(
-            value = TemplateCategory::class,
-            parentColumn = "templateId",
+            value = WalletCategory::class,
+            parentColumn = "walletId",
             entityColumn = "categoryId"
         )
     )

@@ -8,6 +8,6 @@ data class Category(
     @PrimaryKey(autoGenerate = true)
     val id: Long = 0,
     val name: String,
-    val color: Int, // Store color as Int (ARGB)
+    val color: Int,
     val createdAt: Long = System.currentTimeMillis()
 )

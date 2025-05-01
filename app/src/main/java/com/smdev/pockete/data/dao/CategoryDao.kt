@@ -2,7 +2,7 @@ package com.smdev.pockete.data.dao
 
 import androidx.room.*
 import com.smdev.pockete.data.model.Category
-import com.smdev.pockete.data.model.TemplateCategory
+import com.smdev.pockete.data.model.WalletCategory
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -22,12 +22,12 @@ interface CategoryDao {
     @Delete
     suspend fun deleteCategory(category: Category)
 
-    @Query("SELECT * FROM categories c INNER JOIN template_categories tc ON c.id = tc.categoryId WHERE tc.templateId = :templateId")
-    suspend fun getCategoriesForTemplate(templateId: Long): List<Category>
+    @Query("SELECT * FROM categories c INNER JOIN wallet_categories tc ON c.id = tc.categoryId WHERE tc.walletId = :walletId")
+    suspend fun getCategoriesForTemplate(walletId: Long): List<Category>
 
     @Insert
-    suspend fun insertTemplateCategory(templateCategory: TemplateCategory)
+    suspend fun insertTemplateCategory(walletCategory: WalletCategory)
 
     @Delete
-    suspend fun deleteTemplateCategory(templateCategory: TemplateCategory)
+    suspend fun deleteTemplateCategory(walletCategory: WalletCategory)
 }

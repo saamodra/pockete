@@ -3,8 +3,8 @@ package com.smdev.pockete.data.model
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "templates")
-data class Template(
+@Entity(tableName = "wallets")
+data class Wallet(
     @PrimaryKey(autoGenerate = true)
     val id: Long = 0,
     val title: String,

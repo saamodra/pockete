@@ -30,15 +30,15 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.smdev.pockete.data.AppDatabase
-import com.smdev.pockete.data.repository.TemplateRepository
-import com.smdev.pockete.ui.screens.template.TemplateViewModel
-import com.smdev.pockete.ui.screens.template.TemplateViewModelFactory
+import com.smdev.pockete.data.repository.WalletRepository
+import com.smdev.pockete.ui.screens.wallet.WalletViewModel
+import com.smdev.pockete.ui.screens.wallet.WalletViewModelFactory
 import com.smdev.pockete.ui.screens.category.CategoryEditScreen
 import com.smdev.pockete.ui.screens.category.CategoryListScreen
 import com.smdev.pockete.ui.screens.category.CategoryViewModel
 import com.smdev.pockete.ui.screens.category.CategoryViewModelFactory
-import com.smdev.pockete.ui.screens.template.TemplateEditScreen
-import com.smdev.pockete.ui.screens.template.TemplateListScreen
+import com.smdev.pockete.ui.screens.wallet.WalletEditScreen
+import com.smdev.pockete.ui.screens.wallet.WalletListScreen
 import com.smdev.pockete.ui.theme.PocketeTheme
 
 class MainActivity : ComponentActivity() {
@@ -50,7 +50,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    TemplateApp()
+                    WalletApp()
                 }
             }
         }
@@ -74,14 +74,14 @@ sealed class Screen(val route: String, val icon: @Composable () -> Unit, val lab
 }
 
 @Composable
-fun TemplateApp() {
+fun WalletApp() {
     val navController = rememberNavController()
     val database = AppDatabase.getDatabase(LocalContext.current)
-    val templateViewModel: TemplateViewModel = viewModel(
-        factory = TemplateViewModelFactory(
-            TemplateRepository(
-                templateDao = database.templateDao(),
-                templateCategoryDao = database.templateCategoryDao()
+    val walletViewModel: WalletViewModel = viewModel(
+        factory = WalletViewModelFactory(
+            WalletRepository(
+                walletDao = database.walletDao(),
+                walletCategoryDao = database.walletCategoryDao()
             )
         )
     )
@@ -124,11 +124,11 @@ fun TemplateApp() {
             modifier = Modifier.padding(padding)
         ) {
             composable(Screen.Home.route) {
-                TemplateListScreen(
-                    viewModel = templateViewModel,
-                    onAddTemplate = { navController.navigate("edit") },
-                    onEditTemplate = { template ->
-                        navController.navigate("edit/${template.id}")
+                WalletListScreen(
+                    viewModel = walletViewModel,
+                    onAddWallet = { navController.navigate("edit") },
+                    onEditWallet = { wallet ->
+                        navController.navigate("edit/${wallet.id}")
                     }
                 )
             }
@@ -151,30 +151,30 @@ fun TemplateApp() {
             }
             composable("edit") {
                 val allCategories by categoryViewModel.categories.collectAsState()
-                TemplateEditScreen(
+                WalletEditScreen(
                     categories = allCategories,
                     onSave = { title, content, selectedCategories ->
-                        templateViewModel.addTemplate(title, content, selectedCategories)
+                        walletViewModel.addWallet(title, content, selectedCategories)
                     },
                     onNavigateBack = { navController.popBackStack() }
                 )
             }
-            composable("edit/{templateId}") { backStackEntry ->
-                val templateId = backStackEntry.arguments?.getString("templateId")?.toLongOrNull()
-                val uiState by templateViewModel.uiState.collectAsState()
+            composable("edit/{walletId}") { backStackEntry ->
+                val walletId = backStackEntry.arguments?.getString("walletId")?.toLongOrNull()
+                val uiState by walletViewModel.uiState.collectAsState()
                 val allCategories by categoryViewModel.categories.collectAsState()
 
-                LaunchedEffect(templateId) {
-                    templateId?.let { templateViewModel.fetchTemplateById(it) }
+                LaunchedEffect(walletId) {
+                    walletId?.let { walletViewModel.fetchWalletById(it) }
                 }
 
-                TemplateEditScreen(
-                    templateWithCategories = uiState.currentTemplate,
+                WalletEditScreen(
+                    walletWithCategories = uiState.currentWallet,
                     categories = allCategories,
                     onSave = { title, content, selectedCategories ->
-                        uiState.currentTemplate?.let {
-                            templateViewModel.updateTemplate(
-                                it.template.copy(title = title, content = content),
+                        uiState.currentWallet?.let {
+                            walletViewModel.updateWallet(
+                                it.wallet.copy(title = title, content = content),
                                 selectedCategories
                             )
                         }

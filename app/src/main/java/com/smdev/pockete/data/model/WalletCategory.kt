@@ -4,13 +4,13 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 
 @Entity(
-    tableName = "template_categories",
-    primaryKeys = ["templateId", "categoryId"],
+    tableName = "wallet_categories",
+    primaryKeys = ["walletId", "categoryId"],
     foreignKeys = [
         ForeignKey(
-            entity = Template::class,
+            entity = Wallet::class,
             parentColumns = ["id"],
-            childColumns = ["templateId"],
+            childColumns = ["walletId"],
             onDelete = ForeignKey.CASCADE
         ),
         ForeignKey(
@@ -21,7 +21,7 @@ import androidx.room.ForeignKey
         )
     ]
 )
-data class TemplateCategory(
-    val templateId: Long,
+data class WalletCategory(
+    val walletId: Long,
     val categoryId: Long
 )

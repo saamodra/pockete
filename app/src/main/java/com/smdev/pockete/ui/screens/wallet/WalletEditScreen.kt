@@ -1,4 +1,4 @@
-package com.smdev.pockete.ui.screens.template
+package com.smdev.pockete.ui.screens.wallet
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -33,37 +33,37 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.smdev.pockete.data.model.Category
-import com.smdev.pockete.data.model.TemplateWithCategories
+import com.smdev.pockete.data.model.WalletWithCategories
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TemplateEditScreen(
+fun WalletEditScreen(
     modifier: Modifier = Modifier,
-    templateWithCategories: TemplateWithCategories? = null,
+    walletWithCategories: WalletWithCategories? = null,
     categories: List<Category> = emptyList(),
     onSave: (String, String, List<Category>) -> Unit,
     onNavigateBack: () -> Unit
 ) {
-    var title by remember(templateWithCategories) {
+    var title by remember(walletWithCategories) {
         mutableStateOf(
-            templateWithCategories?.template?.title ?: ""
+            walletWithCategories?.wallet?.title ?: ""
         )
     }
-    var content by remember(templateWithCategories) {
+    var content by remember(walletWithCategories) {
         mutableStateOf(
-            templateWithCategories?.template?.content ?: ""
+            walletWithCategories?.wallet?.content ?: ""
         )
     }
-    var selectedCategories by remember(templateWithCategories) {
+    var selectedCategories by remember(walletWithCategories) {
         mutableStateOf(
-            templateWithCategories?.categories ?: emptyList()
+            walletWithCategories?.categories ?: emptyList()
         )
     }
 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(if (templateWithCategories == null) "Add Template" else "Edit Template") },
+                title = { Text(if (walletWithCategories == null) "Add Template" else "Edit Template") },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(Icons.Default.ArrowBack, contentDescription = "Back")
@@ -141,7 +141,7 @@ fun TemplateEditScreen(
                 modifier = Modifier.fillMaxWidth(),
                 enabled = title.isNotBlank() && content.isNotBlank()
             ) {
-                Text(if (templateWithCategories == null) "Add Template" else "Save Changes")
+                Text(if (walletWithCategories == null) "Add Template" else "Save Changes")
             }
         }
     }
