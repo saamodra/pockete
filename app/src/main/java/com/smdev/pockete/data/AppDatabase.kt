@@ -38,7 +38,6 @@ abstract class AppDatabase : RoomDatabase() {
                     AppDatabase::class.java,
                     "pockete_database"
                 )
-                    .fallbackToDestructiveMigration(true)
                 .build()
                 INSTANCE = instance
                 instance
