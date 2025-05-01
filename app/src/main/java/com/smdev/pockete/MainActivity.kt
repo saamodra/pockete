@@ -40,6 +40,7 @@ import com.smdev.pockete.ui.screens.category.CategoryViewModelFactory
 import com.smdev.pockete.ui.screens.wallet.WalletEditScreen
 import com.smdev.pockete.ui.screens.wallet.WalletListScreen
 import com.smdev.pockete.ui.theme.PocketeTheme
+import kotlin.math.exp
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -153,8 +154,8 @@ fun WalletApp() {
                 val allCategories by categoryViewModel.categories.collectAsState()
                 WalletEditScreen(
                     categories = allCategories,
-                    onSave = { title, content, selectedCategories ->
-                        walletViewModel.addWallet(title, content, selectedCategories)
+                    onSave = { title, content, cardHolder, expiryDate, selectedCategories ->
+                        walletViewModel.addWallet(title, content, cardHolder, expiryDate, selectedCategories)
                     },
                     onNavigateBack = { navController.popBackStack() }
                 )
@@ -171,10 +172,10 @@ fun WalletApp() {
                 WalletEditScreen(
                     walletWithCategories = uiState.currentWallet,
                     categories = allCategories,
-                    onSave = { title, content, selectedCategories ->
+                    onSave = { title, content, cardHolder, expiryDate, selectedCategories ->
                         uiState.currentWallet?.let {
                             walletViewModel.updateWallet(
-                                it.wallet.copy(title = title, content = content),
+                                it.wallet.copy(name = title, number = content, cardHolder = cardHolder, expiryDate = expiryDate),
                                 selectedCategories
                             )
                         }

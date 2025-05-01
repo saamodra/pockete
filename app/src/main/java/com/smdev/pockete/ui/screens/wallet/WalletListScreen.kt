@@ -52,8 +52,8 @@ fun WalletListScreen(
             uiState.wallets
         } else {
             uiState.wallets.filter { wallet ->
-                wallet.title.contains(searchQuery, ignoreCase = true) ||
-                        wallet.content.contains(searchQuery, ignoreCase = true)
+                wallet.name.contains(searchQuery, ignoreCase = true) ||
+                        wallet.number.contains(searchQuery, ignoreCase = true)
             }
         }
     }
@@ -90,9 +90,6 @@ fun WalletListScreen(
                         IconButton(onClick = { isSearchActive = true }) {
                             Icon(Icons.Default.Search, contentDescription = "Search")
                         }
-                        IconButton(onClick = onAddWallet) {
-                            Icon(Icons.Default.Add, contentDescription = "Add Template")
-                        }
                     }
                 }
             )
@@ -113,8 +110,8 @@ fun WalletListScreen(
             items(filteredWallet) { wallet ->
                 WalletCard(
                     wallet = wallet,
-                    onCopy = { viewModel.copyToClipboard(context, wallet.content) },
-                    onShare = { viewModel.shareWallet(context, wallet.content) },
+                    onCopy = { viewModel.copyToClipboard(context, wallet.number) },
+                    onShare = { viewModel.shareWallet(context, wallet.number) },
                     onEdit = { onEditWallet(wallet) },
                     onDelete = { showDeleteDialog = wallet }
                 )

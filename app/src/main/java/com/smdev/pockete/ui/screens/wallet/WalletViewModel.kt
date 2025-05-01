@@ -48,7 +48,7 @@ class WalletViewModel(private val repository: WalletRepository) : ViewModel() {
         viewModelScope.launch {
             Log.d(TAG, "Fetching wallet by id: $walletId")
             val wallet = repository.getWalletById(walletId)
-            Log.d(TAG, "Fetched wallet: ${wallet?.wallet?.title}")
+            Log.d(TAG, "Fetched wallet: ${wallet?.wallet?.name}")
             _uiState.update { currentState ->
                 currentState.copy(
                     currentWallet = wallet,
@@ -67,10 +67,10 @@ class WalletViewModel(private val repository: WalletRepository) : ViewModel() {
         }
     }
 
-    fun addWallet(title: String, content: String, categories: List<Category>) {
+    fun addWallet(title: String, content: String, cardHolder: String, expiryDate: Long?, categories: List<Category>) {
         Log.d(TAG, "Adding new wallet: $title")
         viewModelScope.launch {
-            val walletId = repository.insertWallet(Wallet(title = title, content = content))
+            val walletId = repository.insertWallet(Wallet(name = title, number = content, cardHolder = cardHolder, expiryDate = expiryDate))
             categories.forEach { category ->
                 repository.addCategoryToWallet(walletId, category.id)
             }
@@ -79,7 +79,7 @@ class WalletViewModel(private val repository: WalletRepository) : ViewModel() {
     }
 
     fun updateWallet(wallet: Wallet, categories: List<Category>) {
-        Log.d(TAG, "Updating wallet: ${wallet.title}")
+        Log.d(TAG, "Updating wallet: ${wallet.name}")
         viewModelScope.launch {
             repository.updateWallet(wallet)
             val currentCategoryIds = repository.getCategoryIdsForWallet(wallet.id)
@@ -98,7 +98,7 @@ class WalletViewModel(private val repository: WalletRepository) : ViewModel() {
     }
 
     fun deleteWallet(wallet: Wallet) {
-        Log.d(TAG, "Deleting wallet: ${wallet.title}")
+        Log.d(TAG, "Deleting wallet: ${wallet.name}")
         viewModelScope.launch {
             repository.deleteWallet(wallet)
             clearCurrentWallet()

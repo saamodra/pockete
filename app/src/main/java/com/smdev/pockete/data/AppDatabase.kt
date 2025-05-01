@@ -19,7 +19,8 @@ import com.smdev.pockete.data.model.WalletCategory
         Category::class,
         WalletCategory::class
     ],
-    version = 2
+    version = 4,
+    exportSchema = true
 )
 abstract class AppDatabase : RoomDatabase() {
     abstract fun walletDao(): WalletDao

@@ -7,7 +7,9 @@ import androidx.room.PrimaryKey
 data class Wallet(
     @PrimaryKey(autoGenerate = true)
     val id: Long = 0,
-    val title: String,
-    val content: String,
+    val name: String,
+    val number: String,
+    val cardHolder: String,
+    val expiryDate: Long? = null, // Unix timestamp in milliseconds, null if no expiry date
     val createdAt: Long = System.currentTimeMillis(),
 )

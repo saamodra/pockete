@@ -25,6 +25,8 @@ import androidx.compose.ui.unit.sp
 import com.smdev.pockete.R
 import com.smdev.pockete.data.model.Wallet
 import com.smdev.pockete.data.fake.dummyWallet
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 @Composable
 fun WalletCard(
@@ -34,6 +36,11 @@ fun WalletCard(
     onEdit: () -> Unit,
     onDelete: () -> Unit
 ) {
+    val expiryDate = wallet.expiryDate?.let {
+        val dateFormat = SimpleDateFormat("MM/yyyy", Locale.getDefault())
+        dateFormat.format(it)
+    } ?: "N/A"
+
     Card(
         modifier = Modifier.Companion
             .fillMaxWidth()
@@ -53,9 +60,9 @@ fun WalletCard(
                     modifier = Modifier.padding(16.dp)
                 ) {
                     Column {
-                        Text(text = wallet.title, style = MaterialTheme.typography.titleSmall)
+                        Text(text = wallet.name, style = MaterialTheme.typography.titleSmall)
                         Text(
-                            text = wallet.content,
+                            text = wallet.number,
                             fontWeight = FontWeight.Bold,
                             style = MaterialTheme.typography.titleLarge
                         )
@@ -69,7 +76,7 @@ fun WalletCard(
                     )
                 }
             }
-            Spacer(modifier = Modifier.Companion.height(12.dp))
+            Spacer(modifier = Modifier.Companion.height(8.dp))
             Row(
                 modifier = Modifier.Companion
                     .padding(16.dp)
@@ -78,11 +85,11 @@ fun WalletCard(
             ) {
                 Column {
                     Text(fontSize = 8.sp, text = "Name")
-                    Text(fontWeight = FontWeight.Bold, text = wallet.title)
+                    Text(fontWeight = FontWeight.Bold, text = wallet.cardHolder)
                 }
                 Column {
                     Text(fontSize = 8.sp, text = "Expires")
-                    Text(fontWeight = FontWeight.Bold, text = "08/29")
+                    Text(fontWeight = FontWeight.Bold, text = expiryDate)
                 }
             }
         }
