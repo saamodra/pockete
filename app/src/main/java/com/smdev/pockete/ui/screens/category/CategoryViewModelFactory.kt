@@ -1,9 +1,9 @@
-package com.smdev.pockete.ui.category
+package com.smdev.pockete.ui.screens.category
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.smdev.pockete.data.CategoryDao
-import com.smdev.pockete.data.CategoryRepository
+import com.smdev.pockete.data.dao.CategoryDao
+import com.smdev.pockete.data.repository.CategoryRepository
 
 class CategoryViewModelFactory(private val categoryDao: CategoryDao) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {

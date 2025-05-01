@@ -4,6 +4,12 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import com.smdev.pockete.data.dao.CategoryDao
+import com.smdev.pockete.data.dao.TemplateCategoryDao
+import com.smdev.pockete.data.dao.TemplateDao
+import com.smdev.pockete.data.model.Category
+import com.smdev.pockete.data.model.Template
+import com.smdev.pockete.data.model.TemplateCategory
 
 @Database(
     entities = [

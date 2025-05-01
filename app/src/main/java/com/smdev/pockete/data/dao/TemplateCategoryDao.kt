@@ -1,6 +1,7 @@
-package com.smdev.pockete.data
+package com.smdev.pockete.data.dao
 
 import androidx.room.*
+import com.smdev.pockete.data.model.TemplateCategory
 
 @Dao
 interface TemplateCategoryDao {

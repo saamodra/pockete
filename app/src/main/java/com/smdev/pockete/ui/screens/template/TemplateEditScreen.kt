@@ -1,4 +1,4 @@
-package com.smdev.pockete.ui.screens
+package com.smdev.pockete.ui.screens.template
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -32,8 +32,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.smdev.pockete.data.Category
-import com.smdev.pockete.data.TemplateWithCategories
+import com.smdev.pockete.data.model.Category
+import com.smdev.pockete.data.model.TemplateWithCategories
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

@@ -1,4 +1,4 @@
-package com.smdev.pockete.ui.screens
+package com.smdev.pockete.ui.screens.template
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -41,8 +41,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.smdev.pockete.R
-import com.smdev.pockete.data.Template
-import com.smdev.pockete.ui.TemplateViewModel
+import com.smdev.pockete.data.model.Template
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

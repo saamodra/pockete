@@ -1,8 +1,8 @@
-package com.smdev.pockete.ui
+package com.smdev.pockete.ui.screens.template
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.smdev.pockete.data.TemplateRepository
+import com.smdev.pockete.data.repository.TemplateRepository
 
 class TemplateViewModelFactory(private val repository: TemplateRepository) :
     ViewModelProvider.Factory {

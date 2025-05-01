@@ -1,5 +1,10 @@
-package com.smdev.pockete.data
+package com.smdev.pockete.data.repository
 
+import com.smdev.pockete.data.dao.TemplateCategoryDao
+import com.smdev.pockete.data.dao.TemplateDao
+import com.smdev.pockete.data.model.Template
+import com.smdev.pockete.data.model.TemplateCategory
+import com.smdev.pockete.data.model.TemplateWithCategories
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 

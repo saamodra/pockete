@@ -1,4 +1,4 @@
-package com.smdev.pockete.data
+package com.smdev.pockete.data.model
 
 import androidx.room.Entity
 import androidx.room.ForeignKey

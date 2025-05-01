@@ -1,6 +1,8 @@
-package com.smdev.pockete.data
+package com.smdev.pockete.data.dao
 
 import androidx.room.*
+import com.smdev.pockete.data.model.Category
+import com.smdev.pockete.data.model.TemplateCategory
 import kotlinx.coroutines.flow.Flow
 
 @Dao

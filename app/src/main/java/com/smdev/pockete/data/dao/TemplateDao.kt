@@ -1,4 +1,4 @@
-package com.smdev.pockete.data
+package com.smdev.pockete.data.dao
 
 import androidx.room.Dao
 import androidx.room.Delete
@@ -7,6 +7,8 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
+import com.smdev.pockete.data.model.Template
+import com.smdev.pockete.data.model.TemplateWithCategories
 import kotlinx.coroutines.flow.Flow
 
 @Dao

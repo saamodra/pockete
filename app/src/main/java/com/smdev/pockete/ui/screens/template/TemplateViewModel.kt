@@ -1,4 +1,4 @@
-package com.smdev.pockete.ui
+package com.smdev.pockete.ui.screens.template
 
 import android.content.ClipData
 import android.content.ClipboardManager
@@ -8,10 +8,10 @@ import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.smdev.pockete.data.Category
-import com.smdev.pockete.data.Template
-import com.smdev.pockete.data.TemplateRepository
-import com.smdev.pockete.data.TemplateWithCategories
+import com.smdev.pockete.data.model.Category
+import com.smdev.pockete.data.model.Template
+import com.smdev.pockete.data.repository.TemplateRepository
+import com.smdev.pockete.data.model.TemplateWithCategories
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow

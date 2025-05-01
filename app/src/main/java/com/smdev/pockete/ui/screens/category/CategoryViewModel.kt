@@ -1,9 +1,9 @@
-package com.smdev.pockete.ui.category
+package com.smdev.pockete.ui.screens.category
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.smdev.pockete.data.Category
-import com.smdev.pockete.data.CategoryRepository
+import com.smdev.pockete.data.model.Category
+import com.smdev.pockete.data.repository.CategoryRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow

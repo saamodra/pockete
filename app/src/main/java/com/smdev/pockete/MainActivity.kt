@@ -30,15 +30,15 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.smdev.pockete.data.AppDatabase
-import com.smdev.pockete.data.TemplateRepository
-import com.smdev.pockete.ui.TemplateViewModel
-import com.smdev.pockete.ui.TemplateViewModelFactory
-import com.smdev.pockete.ui.category.CategoryEditScreen
-import com.smdev.pockete.ui.category.CategoryListScreen
-import com.smdev.pockete.ui.category.CategoryViewModel
-import com.smdev.pockete.ui.category.CategoryViewModelFactory
-import com.smdev.pockete.ui.screens.TemplateEditScreen
-import com.smdev.pockete.ui.screens.TemplateListScreen
+import com.smdev.pockete.data.repository.TemplateRepository
+import com.smdev.pockete.ui.screens.template.TemplateViewModel
+import com.smdev.pockete.ui.screens.template.TemplateViewModelFactory
+import com.smdev.pockete.ui.screens.category.CategoryEditScreen
+import com.smdev.pockete.ui.screens.category.CategoryListScreen
+import com.smdev.pockete.ui.screens.category.CategoryViewModel
+import com.smdev.pockete.ui.screens.category.CategoryViewModelFactory
+import com.smdev.pockete.ui.screens.template.TemplateEditScreen
+import com.smdev.pockete.ui.screens.template.TemplateListScreen
 import com.smdev.pockete.ui.theme.PocketeTheme
 
 class MainActivity : ComponentActivity() {

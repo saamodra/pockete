@@ -1,5 +1,7 @@
-package com.smdev.pockete.data
+package com.smdev.pockete.data.repository
 
+import com.smdev.pockete.data.dao.CategoryDao
+import com.smdev.pockete.data.model.Category
 import kotlinx.coroutines.flow.Flow
 
 class CategoryRepository(private val categoryDao: CategoryDao) {
