@@ -16,6 +16,10 @@ interface WalletDao {
     @Query("SELECT * FROM wallets ORDER BY createdAt DESC")
     fun getAllWallets(): Flow<List<Wallet>>
 
+    @Transaction
+    @Query("SELECT * FROM wallets ORDER BY createdAt DESC")
+    fun getAllWalletsWithCategories(): Flow<List<WalletWithCategories>>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertWallet(wallet: Wallet): Long
 

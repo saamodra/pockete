@@ -3,13 +3,14 @@ package com.smdev.pockete
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -18,9 +19,11 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -29,6 +32,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.smdev.pockete.data.AppDatabase
+import com.smdev.pockete.data.repository.CategoryRepository
 import com.smdev.pockete.data.repository.WalletRepository
 import com.smdev.pockete.ui.screens.category.CategoryEditScreen
 import com.smdev.pockete.ui.screens.category.CategoryListScreen
@@ -39,13 +43,6 @@ import com.smdev.pockete.ui.screens.wallet.WalletListScreen
 import com.smdev.pockete.ui.screens.wallet.WalletViewModel
 import com.smdev.pockete.ui.screens.wallet.WalletViewModelFactory
 import com.smdev.pockete.ui.theme.PocketeTheme
-import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.material3.NavigationBarItemDefaults
-import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.graphics.Color
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -63,19 +60,19 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-sealed class Screen(val route: String, val icon: @Composable () -> Unit, val label: String) {
-    object Home : Screen("home", {
+sealed class Screen(val route: String, val icon: @Composable (Boolean) -> Unit, val label: String) {
+    object Home : Screen("home", { isSelected ->
         Icon(
-            painter = painterResource(id = R.drawable.outline_wallet_24),
+            painter = painterResource(id = if (isSelected) R.drawable.baseline_home_24 else R.drawable.outline_home_24),
             contentDescription = "Home"
         )
     }, "Home")
 
     object Categories : Screen(
         "categories",
-        {
+        { isSelected ->
             Icon(
-                painter = painterResource(id = R.drawable.outline_category_24),
+                painter = painterResource(id = if (isSelected) R.drawable.baseline_category_24 else R.drawable.outline_category_24),
                 contentDescription = "Categories"
             )
         },
@@ -83,9 +80,9 @@ sealed class Screen(val route: String, val icon: @Composable () -> Unit, val lab
     )
 
     object More :
-        Screen("more", {
+        Screen("more", { isSelected ->
             Icon(
-                painter = painterResource(id = R.drawable.outline_settings_24),
+                painter = painterResource(id = if (isSelected) R.drawable.baseline_settings_24 else R.drawable.outline_settings_24),
                 contentDescription = "More"
             )
         }, "More")
@@ -105,8 +102,7 @@ fun WalletApp() {
     )
     val categoryViewModel: CategoryViewModel = viewModel(
         factory = CategoryViewModelFactory(
-            AppDatabase.getDatabase(LocalContext.current)
-                .categoryDao()
+            CategoryRepository(categoryDao = database.categoryDao())
         )
     )
 
@@ -129,10 +125,12 @@ fun WalletApp() {
                     contentColor = Color.Black
                 ) {
                     items.forEach { screen ->
+                        val isSelected =
+                            currentDestination?.hierarchy?.any { it.route == screen.route } == true
                         NavigationBarItem(
-                            icon = screen.icon,
+                            icon = { screen.icon(isSelected) },
                             label = { Text(screen.label) },
-                            selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true,
+                            selected = isSelected,
                             onClick = {
                                 navController.navigate(screen.route) {
                                     popUpTo(navController.graph.findStartDestination().id) {
@@ -145,7 +143,7 @@ fun WalletApp() {
                             colors = NavigationBarItemDefaults.colors(
                                 selectedIconColor = Color.Black,
                                 selectedTextColor = Color.Black,
-                                indicatorColor = Color.White
+                                indicatorColor = Color.Black.copy(alpha = 0.1f)
                             )
                         )
                     }
@@ -161,6 +159,7 @@ fun WalletApp() {
             composable(Screen.Home.route) {
                 WalletListScreen(
                     viewModel = walletViewModel,
+                    categoryViewModel = categoryViewModel,
                     onAddWallet = { navController.navigate("edit") },
                     onEditWallet = { wallet ->
                         navController.navigate("edit/${wallet.id}")

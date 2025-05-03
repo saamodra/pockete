@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.flowOf
 val fakeWalletRepository = WalletRepository(
     object : WalletDao {
         override fun getAllWallets(): Flow<List<Wallet>> = flowOf(dummyWallets)
+        override fun getAllWalletsWithCategories(): Flow<List<WalletWithCategories>> = flowOf(dummyWalletsWithCategories)
         override suspend fun insertWallet(wallet: Wallet): Long = 1
         override suspend fun updateWallet(wallet: Wallet) {}
         override suspend fun deleteWallet(wallet: Wallet) {}

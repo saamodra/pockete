@@ -17,6 +17,11 @@ class WalletRepository(
             templates
         }
 
+    val allWalletsWithCategories: Flow<List<WalletWithCategories>> = walletDao.getAllWalletsWithCategories()
+        .map { wallets ->
+            wallets
+        }
+
     suspend fun getWalletById(id: Long): WalletWithCategories? {
         return walletDao.getWalletWithCategories(id)
     }

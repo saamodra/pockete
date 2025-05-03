@@ -20,7 +20,7 @@ import kotlinx.coroutines.launch
 
 data class WalletUiState(
     val currentWallet: WalletWithCategories? = null,
-    val wallets: List<Wallet> = emptyList(),
+    val wallets: List<WalletWithCategories> = emptyList(),
     val isEditing: Boolean = false
 )
 
@@ -33,10 +33,10 @@ class WalletViewModel(private val repository: WalletRepository) : ViewModel() {
         Log.d(TAG, "ViewModel initialized")
         viewModelScope.launch {
             Log.d(TAG, "Starting to collect wallets")
-            repository.allWallets.collect { wallet ->
-                Log.d(TAG, "Received wallet update: ${wallet.size} wallet")
+            repository.allWalletsWithCategories.collect { wallets ->
+                Log.d(TAG, "Received wallet update: ${wallets.size} wallet")
                 _uiState.update { currentState ->
-                    val newState = currentState.copy(wallets = wallet)
+                    val newState = currentState.copy(wallets = wallets)
                     Log.d(TAG, "Updated UI state with ${newState.wallets.size} wallet")
                     newState
                 }

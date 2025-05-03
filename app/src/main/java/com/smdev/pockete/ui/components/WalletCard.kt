@@ -42,7 +42,7 @@ fun WalletCard(
     val expiryDate = wallet.expiryDate?.let {
         val dateFormat = SimpleDateFormat("MM/yyyy", Locale.getDefault())
         dateFormat.format(it)
-    } ?: "N/A"
+    } ?: "-"
 
     val backgroundColor = Color(wallet.color)
     val isLightColor = backgroundColor.luminance() > 0.5f
