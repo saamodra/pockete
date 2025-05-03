@@ -9,28 +9,24 @@ import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
-import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.MenuAnchorType
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -39,17 +35,24 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.smdev.pockete.data.model.Category
 import com.smdev.pockete.data.model.WalletWithCategories
-import java.util.*
+import com.smdev.pockete.ui.components.ColorInput
+import com.smdev.pockete.ui.theme.TailwindColors
+import compose.icons.TablerIcons
+import compose.icons.tablericons.ArrowBack
+import compose.icons.tablericons.ArrowLeft
+import java.util.Calendar
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -57,12 +60,13 @@ fun WalletEditScreen(
     modifier: Modifier = Modifier,
     walletWithCategories: WalletWithCategories? = null,
     categories: List<Category> = emptyList(),
-    onSave: (String, String, String, Long?, List<Category>) -> Unit,
+    onSave: (String, String, String, Long?, Int, List<Category>) -> Unit,
     onNavigateBack: () -> Unit
 ) {
     var name by remember(walletWithCategories) { mutableStateOf(walletWithCategories?.wallet?.name ?: "") }
     var number by remember(walletWithCategories) { mutableStateOf(walletWithCategories?.wallet?.number ?: "") }
     var cardHolder by remember(walletWithCategories) { mutableStateOf(walletWithCategories?.wallet?.cardHolder ?: "") }
+    var color by remember(walletWithCategories) { mutableIntStateOf(walletWithCategories?.wallet?.color ?: TailwindColors.allColors[0].toArgb()) }
     var selectedCategories by remember(walletWithCategories) { mutableStateOf(walletWithCategories?.categories ?: emptyList()) }
     var showCategoryDialog by remember { mutableStateOf(false) }
 
@@ -100,7 +104,7 @@ fun WalletEditScreen(
                 } else {
                     expiryDate = null
                 }
-            } catch (e: NumberFormatException) {
+            } catch (_: NumberFormatException) {
                 expiryDate = null
             }
         } else {
@@ -114,7 +118,7 @@ fun WalletEditScreen(
                 title = { Text(if (walletWithCategories == null) "Add Wallet" else "Edit Wallet") },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+                        Icon(TablerIcons.ArrowLeft, contentDescription = "Back")
                     }
                 }
             )
@@ -131,6 +135,12 @@ fun WalletEditScreen(
                 value = name,
                 onValueChange = { name = it },
                 label = { Text("Name") },
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            ColorInput(
+                value = color,
+                onValueChange = { color = it },
                 modifier = Modifier.fillMaxWidth()
             )
 
@@ -163,19 +173,23 @@ fun WalletEditScreen(
                     Text(
                         text = "Month (MM)",
                         style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurface
+                        color = MaterialTheme.colorScheme.onSurface,
+                        modifier = Modifier.padding(bottom = 4.dp)
                     )
-                    Box {
-                        Text(
-                            text = month.ifEmpty { "Select" },
+                    ExposedDropdownMenuBox(
+                        expanded = isMonthDropdownExpanded,
+                        onExpandedChange = { isMonthDropdownExpanded = it }
+                    ) {
+                        OutlinedTextField(
+                            value = month.ifEmpty { "Select" },
+                            onValueChange = {},
+                            readOnly = true,
+                            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = isMonthDropdownExpanded) },
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .clickable { isMonthDropdownExpanded = true }
-                                .background(MaterialTheme.colorScheme.surface)
-                                .padding(16.dp),
-                            style = MaterialTheme.typography.bodyMedium
+                                .menuAnchor(MenuAnchorType.PrimaryEditable, enabled = true)
                         )
-                        DropdownMenu(
+                        ExposedDropdownMenu(
                             expanded = isMonthDropdownExpanded,
                             onDismissRequest = { isMonthDropdownExpanded = false }
                         ) {
@@ -203,7 +217,8 @@ fun WalletEditScreen(
                     Text(
                         text = "Year (YYYY)",
                         style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurface
+                        color = MaterialTheme.colorScheme.onSurface,
+                        modifier = Modifier.padding(bottom = 4.dp)
                     )
                     OutlinedTextField(
                         value = year,
@@ -268,7 +283,7 @@ fun WalletEditScreen(
 
             Button(
                 onClick = {
-                    onSave(name, number, cardHolder, expiryDate, selectedCategories)
+                    onSave(name, number, cardHolder, expiryDate, color, selectedCategories)
                     onNavigateBack()
                 },
                 modifier = Modifier.fillMaxWidth(),

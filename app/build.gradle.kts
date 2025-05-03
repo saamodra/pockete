@@ -68,4 +68,9 @@ dependencies {
 
     // Navigation
     implementation(libs.androidx.navigation.compose)
+
+    // Compose Icons
+    implementation("br.com.devsrsouza.compose.icons:font-awesome:1.1.1")
+    implementation("br.com.devsrsouza.compose.icons:feather:1.1.1")
+    implementation("br.com.devsrsouza.compose.icons:tabler-icons:1.1.1")
 }

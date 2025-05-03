@@ -10,8 +10,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.smdev.pockete.data.model.Category
 import com.smdev.pockete.data.model.Wallet
-import com.smdev.pockete.data.repository.WalletRepository
 import com.smdev.pockete.data.model.WalletWithCategories
+import com.smdev.pockete.data.repository.WalletRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -67,10 +67,10 @@ class WalletViewModel(private val repository: WalletRepository) : ViewModel() {
         }
     }
 
-    fun addWallet(title: String, content: String, cardHolder: String, expiryDate: Long?, categories: List<Category>) {
+    fun addWallet(title: String, content: String, cardHolder: String, expiryDate: Long?, color: Int, categories: List<Category>) {
         Log.d(TAG, "Adding new wallet: $title")
         viewModelScope.launch {
-            val walletId = repository.insertWallet(Wallet(name = title, number = content, cardHolder = cardHolder, expiryDate = expiryDate))
+            val walletId = repository.insertWallet(Wallet(name = title, number = content, cardHolder = cardHolder, expiryDate = expiryDate, color = color))
             categories.forEach { category ->
                 repository.addCategoryToWallet(walletId, category.id)
             }

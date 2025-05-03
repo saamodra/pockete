@@ -1,5 +1,6 @@
 package com.smdev.pockete.ui.components
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -17,14 +18,16 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.smdev.pockete.R
-import com.smdev.pockete.data.model.Wallet
 import com.smdev.pockete.data.fake.dummyWallet
+import com.smdev.pockete.data.model.Wallet
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -41,6 +44,10 @@ fun WalletCard(
         dateFormat.format(it)
     } ?: "N/A"
 
+    val backgroundColor = Color(wallet.color)
+    val isLightColor = backgroundColor.luminance() > 0.5f
+    val textColor = if (isLightColor) Color.Black else Color.White
+
     Card(
         modifier = Modifier.Companion
             .fillMaxWidth()
@@ -48,48 +55,74 @@ fun WalletCard(
             .clickable(onClick = onEdit),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
-        Column(
-            modifier = Modifier.Companion
+        Box(
+            modifier = Modifier
                 .fillMaxWidth()
+                .background(backgroundColor)
         ) {
-            Row(
-                modifier = Modifier.Companion.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
+            Column(
+                modifier = Modifier.Companion
+                    .fillMaxWidth()
+                    .padding(16.dp)
             ) {
-                Box(
-                    modifier = Modifier.padding(16.dp)
+                Row(
+                    modifier = Modifier.Companion.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
                 ) {
                     Column {
-                        Text(text = wallet.name, style = MaterialTheme.typography.titleSmall)
+                        Text(
+                            text = wallet.name,
+                            style = MaterialTheme.typography.titleSmall,
+                            color = textColor
+                        )
                         Text(
                             text = wallet.number,
                             fontWeight = FontWeight.Bold,
-                            style = MaterialTheme.typography.titleLarge
+                            style = MaterialTheme.typography.titleLarge,
+                            color = textColor
+                        )
+                    }
+                    IconButton(
+                        onClick = onCopy,
+                        modifier = Modifier.padding(4.dp)
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.baseline_content_copy_24),
+                            contentDescription = "Copy",
+                            tint = textColor
                         )
                     }
                 }
-                IconButton(onClick = onCopy, modifier = Modifier.padding(4.dp)) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.baseline_content_copy_24),
-                        contentDescription = "Copy",
-                        tint = MaterialTheme.colorScheme.primary
-                    )
-                }
-            }
-            Spacer(modifier = Modifier.Companion.height(8.dp))
-            Row(
-                modifier = Modifier.Companion
-                    .padding(16.dp)
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-            ) {
-                Column {
-                    Text(fontSize = 8.sp, text = "Name")
-                    Text(fontWeight = FontWeight.Bold, text = wallet.cardHolder)
-                }
-                Column {
-                    Text(fontSize = 8.sp, text = "Expires")
-                    Text(fontWeight = FontWeight.Bold, text = expiryDate)
+                Spacer(modifier = Modifier.Companion.height(8.dp))
+                Row(
+                    modifier = Modifier.Companion
+                        .fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                ) {
+                    Column {
+                        Text(
+                            fontSize = 8.sp,
+                            text = "Name",
+                            color = textColor.copy(alpha = 0.7f)
+                        )
+                        Text(
+                            fontWeight = FontWeight.Bold,
+                            text = wallet.cardHolder,
+                            color = textColor
+                        )
+                    }
+                    Column {
+                        Text(
+                            fontSize = 8.sp,
+                            text = "Expires",
+                            color = textColor.copy(alpha = 0.7f)
+                        )
+                        Text(
+                            fontWeight = FontWeight.Bold,
+                            text = expiryDate,
+                            color = textColor
+                        )
+                    }
                 }
             }
         }

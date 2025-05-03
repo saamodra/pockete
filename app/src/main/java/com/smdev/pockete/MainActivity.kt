@@ -3,11 +3,9 @@ package com.smdev.pockete
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
@@ -21,6 +19,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavDestination.Companion.hierarchy
@@ -31,16 +30,22 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.smdev.pockete.data.AppDatabase
 import com.smdev.pockete.data.repository.WalletRepository
-import com.smdev.pockete.ui.screens.wallet.WalletViewModel
-import com.smdev.pockete.ui.screens.wallet.WalletViewModelFactory
 import com.smdev.pockete.ui.screens.category.CategoryEditScreen
 import com.smdev.pockete.ui.screens.category.CategoryListScreen
 import com.smdev.pockete.ui.screens.category.CategoryViewModel
 import com.smdev.pockete.ui.screens.category.CategoryViewModelFactory
 import com.smdev.pockete.ui.screens.wallet.WalletEditScreen
 import com.smdev.pockete.ui.screens.wallet.WalletListScreen
+import com.smdev.pockete.ui.screens.wallet.WalletViewModel
+import com.smdev.pockete.ui.screens.wallet.WalletViewModelFactory
 import com.smdev.pockete.ui.theme.PocketeTheme
-import kotlin.math.exp
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.material3.NavigationBarItemDefaults
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.graphics.Color
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -49,7 +54,7 @@ class MainActivity : ComponentActivity() {
             PocketeTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
+                    color = Color.White
                 ) {
                     WalletApp()
                 }
@@ -59,19 +64,31 @@ class MainActivity : ComponentActivity() {
 }
 
 sealed class Screen(val route: String, val icon: @Composable () -> Unit, val label: String) {
-    object Home : Screen("home", { Icon(Icons.Default.Home, contentDescription = "Home") }, "Home")
+    object Home : Screen("home", {
+        Icon(
+            painter = painterResource(id = R.drawable.outline_wallet_24),
+            contentDescription = "Home"
+        )
+    }, "Home")
+
     object Categories : Screen(
         "categories",
         {
             Icon(
-                painter = painterResource(id = R.drawable.baseline_category_24),
+                painter = painterResource(id = R.drawable.outline_category_24),
                 contentDescription = "Categories"
             )
         },
         "Categories"
     )
+
     object More :
-        Screen("more", { Icon(Icons.Default.MoreVert, contentDescription = "More") }, "More")
+        Screen("more", {
+            Icon(
+                painter = painterResource(id = R.drawable.outline_settings_24),
+                contentDescription = "More"
+            )
+        }, "More")
 }
 
 @Composable
@@ -98,23 +115,40 @@ fun WalletApp() {
     val currentDestination = navBackStackEntry?.destination
 
     Scaffold(
+        containerColor = Color.Transparent,
         bottomBar = {
-            NavigationBar {
-                items.forEach { screen ->
-                    NavigationBarItem(
-                        icon = screen.icon,
-                        label = { Text(screen.label) },
-                        selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true,
-                        onClick = {
-                            navController.navigate(screen.route) {
-                                popUpTo(navController.graph.findStartDestination().id) {
-                                    saveState = true
+            Surface(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .shadow(elevation = 4.dp)
+                    .border(width = 1.dp, color = Color.LightGray.copy(alpha = 0.5f)),
+                color = Color.White
+            ) {
+                NavigationBar(
+                    containerColor = Color.White,
+                    contentColor = Color.Black
+                ) {
+                    items.forEach { screen ->
+                        NavigationBarItem(
+                            icon = screen.icon,
+                            label = { Text(screen.label) },
+                            selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true,
+                            onClick = {
+                                navController.navigate(screen.route) {
+                                    popUpTo(navController.graph.findStartDestination().id) {
+                                        saveState = true
+                                    }
+                                    launchSingleTop = true
+                                    restoreState = true
                                 }
-                                launchSingleTop = true
-                                restoreState = true
-                            }
-                        }
-                    )
+                            },
+                            colors = NavigationBarItemDefaults.colors(
+                                selectedIconColor = Color.Black,
+                                selectedTextColor = Color.Black,
+                                indicatorColor = Color.White
+                            )
+                        )
+                    }
                 }
             }
         }
@@ -154,8 +188,15 @@ fun WalletApp() {
                 val allCategories by categoryViewModel.categories.collectAsState()
                 WalletEditScreen(
                     categories = allCategories,
-                    onSave = { title, content, cardHolder, expiryDate, selectedCategories ->
-                        walletViewModel.addWallet(title, content, cardHolder, expiryDate, selectedCategories)
+                    onSave = { title, content, cardHolder, expiryDate, color, selectedCategories ->
+                        walletViewModel.addWallet(
+                            title,
+                            content,
+                            cardHolder,
+                            expiryDate,
+                            color,
+                            selectedCategories
+                        )
                     },
                     onNavigateBack = { navController.popBackStack() }
                 )
@@ -172,10 +213,16 @@ fun WalletApp() {
                 WalletEditScreen(
                     walletWithCategories = uiState.currentWallet,
                     categories = allCategories,
-                    onSave = { title, content, cardHolder, expiryDate, selectedCategories ->
+                    onSave = { title, content, cardHolder, expiryDate, color, selectedCategories ->
                         uiState.currentWallet?.let {
                             walletViewModel.updateWallet(
-                                it.wallet.copy(name = title, number = content, cardHolder = cardHolder, expiryDate = expiryDate),
+                                it.wallet.copy(
+                                    name = title,
+                                    number = content,
+                                    cardHolder = cardHolder,
+                                    expiryDate = expiryDate,
+                                    color = color
+                                ),
                                 selectedCategories
                             )
                         }

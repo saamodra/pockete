@@ -15,11 +15,13 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -27,12 +29,17 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.smdev.pockete.data.fake.fakeWalletRepository
 import com.smdev.pockete.data.model.Wallet
 import com.smdev.pockete.ui.components.WalletCard
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
+import androidx.compose.foundation.border
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -60,39 +67,51 @@ fun WalletListScreen(
 
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = {
-                    if (isSearchActive) {
-                        TextField(
-                            value = searchQuery,
-                            onValueChange = { searchQuery = it },
-                            modifier = Modifier.fillMaxWidth(),
-                            placeholder = { Text("Search wallets...") },
-                            singleLine = true,
-                            colors = TextFieldDefaults.colors(
-                                focusedContainerColor = MaterialTheme.colorScheme.surface,
-                                unfocusedContainerColor = MaterialTheme.colorScheme.surface
+            Surface(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .border(width = 1.dp, color = Color.LightGray.copy(alpha = 0.5f)),
+                color = Color.White
+            ) {
+                TopAppBar(
+                    title = {
+                        if (isSearchActive) {
+                            TextField(
+                                value = searchQuery,
+                                onValueChange = { searchQuery = it },
+                                modifier = Modifier.fillMaxWidth(),
+                                placeholder = { Text("Search wallets...") },
+                                singleLine = true,
+                                colors = TextFieldDefaults.colors(
+                                    focusedContainerColor = Color.White,
+                                    unfocusedContainerColor = Color.White
+                                )
                             )
-                        )
-                    } else {
-                        Text("Pockete")
-                    }
-                },
-                actions = {
-                    if (isSearchActive) {
-                        IconButton(onClick = {
-                            searchQuery = ""
-                            isSearchActive = false
-                        }) {
-                            Icon(Icons.Default.Search, contentDescription = "Close Search")
+                        } else {
+                            Text("Pockete")
                         }
-                    } else {
-                        IconButton(onClick = { isSearchActive = true }) {
-                            Icon(Icons.Default.Search, contentDescription = "Search")
+                    },
+                    actions = {
+                        if (isSearchActive) {
+                            IconButton(onClick = {
+                                searchQuery = ""
+                                isSearchActive = false
+                            }) {
+                                Icon(Icons.Default.Search, contentDescription = "Close Search")
+                            }
+                        } else {
+                            IconButton(onClick = { isSearchActive = true }) {
+                                Icon(Icons.Default.Search, contentDescription = "Search")
+                            }
                         }
-                    }
-                }
-            )
+                    },
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = Color.White,
+                        titleContentColor = Color.Black,
+                        actionIconContentColor = Color.Black
+                    )
+                )
+            }
         },
         floatingActionButton = {
             if (!isSearchActive) {
@@ -100,7 +119,8 @@ fun WalletListScreen(
                     Icon(Icons.Default.Add, contentDescription = "Add Template")
                 }
             }
-        }
+        },
+        containerColor = Color.Transparent
     ) { padding ->
         LazyColumn(
             modifier = Modifier
@@ -151,10 +171,15 @@ fun WalletListScreenPreview() {
     )
 
     MaterialTheme {
-        WalletListScreen(
-            viewModel = fakeWalletViewModel,
-            onAddWallet = {},
-            onEditWallet = {}
-        )
+        Surface(
+            modifier = Modifier.fillMaxSize(),
+            color = Color.White
+        ) {
+            WalletListScreen(
+                viewModel = fakeWalletViewModel,
+                onAddWallet = {},
+                onEditWallet = {}
+            )
+        }
     }
 }

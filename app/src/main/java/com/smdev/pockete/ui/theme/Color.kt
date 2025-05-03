@@ -195,6 +195,12 @@ object TailwindColors {
 
     // List of all colors
     val allColors = listOf(
+        // Slate
+        Slate400, Slate500, Slate600, Slate700, Slate800, Slate900, Slate950,
+        // Gray
+        Gray400, Gray500, Gray600, Gray700, Gray800, Gray900, Gray950,
+        // Neutral
+        Neutral400, Neutral500, Neutral600, Neutral700, Neutral800, Neutral900, Neutral950,
         // Red
         Red400, Red500, Red600, Red700, Red800, Red900, Red950,
         // Orange
@@ -228,12 +234,6 @@ object TailwindColors {
         // Pink
         Pink400, Pink500, Pink600, Pink700, Pink800, Pink900, Pink950,
         // Rose
-        Rose400, Rose500, Rose600, Rose700, Rose800, Rose900, Rose950,
-        // Slate
-        Slate400, Slate500, Slate600, Slate700, Slate800, Slate900, Slate950,
-        // Gray
-        Gray400, Gray500, Gray600, Gray700, Gray800, Gray900, Gray950,
-        // Neutral
-        Neutral400, Neutral500, Neutral600, Neutral700, Neutral800, Neutral900, Neutral950
+        Rose400, Rose500, Rose600, Rose700, Rose800, Rose900, Rose950
     )
 }
