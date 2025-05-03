@@ -73,4 +73,5 @@ dependencies {
     implementation("br.com.devsrsouza.compose.icons:font-awesome:1.1.1")
     implementation("br.com.devsrsouza.compose.icons:feather:1.1.1")
     implementation("br.com.devsrsouza.compose.icons:tabler-icons:1.1.1")
+    implementation("de.charlex.compose:revealswipe:2.0.0-beta01")
 }

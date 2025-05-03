@@ -12,20 +12,17 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuAnchorType
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.MenuAnchorType
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -50,8 +47,9 @@ import com.smdev.pockete.data.model.WalletWithCategories
 import com.smdev.pockete.ui.components.ColorInput
 import com.smdev.pockete.ui.theme.TailwindColors
 import compose.icons.TablerIcons
-import compose.icons.tablericons.ArrowBack
 import compose.icons.tablericons.ArrowLeft
+import compose.icons.tablericons.Plus
+import compose.icons.tablericons.X
 import java.util.Calendar
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -63,22 +61,46 @@ fun WalletEditScreen(
     onSave: (String, String, String, Long?, Int, List<Category>) -> Unit,
     onNavigateBack: () -> Unit
 ) {
-    var name by remember(walletWithCategories) { mutableStateOf(walletWithCategories?.wallet?.name ?: "") }
-    var number by remember(walletWithCategories) { mutableStateOf(walletWithCategories?.wallet?.number ?: "") }
-    var cardHolder by remember(walletWithCategories) { mutableStateOf(walletWithCategories?.wallet?.cardHolder ?: "") }
-    var color by remember(walletWithCategories) { mutableIntStateOf(walletWithCategories?.wallet?.color ?: TailwindColors.allColors[0].toArgb()) }
-    var selectedCategories by remember(walletWithCategories) { mutableStateOf(walletWithCategories?.categories ?: emptyList()) }
+    var name by remember(walletWithCategories) {
+        mutableStateOf(
+            walletWithCategories?.wallet?.name ?: ""
+        )
+    }
+    var number by remember(walletWithCategories) {
+        mutableStateOf(
+            walletWithCategories?.wallet?.number ?: ""
+        )
+    }
+    var cardHolder by remember(walletWithCategories) {
+        mutableStateOf(
+            walletWithCategories?.wallet?.cardHolder ?: ""
+        )
+    }
+    var color by remember(walletWithCategories) {
+        mutableIntStateOf(
+            walletWithCategories?.wallet?.color ?: TailwindColors.allColors[0].toArgb()
+        )
+    }
+    var selectedCategories by remember(walletWithCategories) {
+        mutableStateOf(
+            walletWithCategories?.categories ?: emptyList()
+        )
+    }
     var showCategoryDialog by remember { mutableStateOf(false) }
 
     // Expiry date state
-    var month by remember(walletWithCategories) { mutableStateOf(walletWithCategories?.wallet?.expiryDate?.let { date ->
-        val calendar = Calendar.getInstance().apply { timeInMillis = date }
-        "${calendar.get(Calendar.MONTH) + 1}".padStart(2, '0')
-    } ?: "") }
-    var year by remember(walletWithCategories) { mutableStateOf(walletWithCategories?.wallet?.expiryDate?.let { date ->
-        val calendar = Calendar.getInstance().apply { timeInMillis = date }
-        calendar.get(Calendar.YEAR).toString()
-    } ?: "") }
+    var month by remember(walletWithCategories) {
+        mutableStateOf(walletWithCategories?.wallet?.expiryDate?.let { date ->
+            val calendar = Calendar.getInstance().apply { timeInMillis = date }
+            "${calendar.get(Calendar.MONTH) + 1}".padStart(2, '0')
+        } ?: "")
+    }
+    var year by remember(walletWithCategories) {
+        mutableStateOf(walletWithCategories?.wallet?.expiryDate?.let { date ->
+            val calendar = Calendar.getInstance().apply { timeInMillis = date }
+            calendar.get(Calendar.YEAR).toString()
+        } ?: "")
+    }
     var expiryDate by remember(walletWithCategories) { mutableStateOf(walletWithCategories?.wallet?.expiryDate) }
 
     // Dropdown state for month
@@ -187,7 +209,10 @@ fun WalletEditScreen(
                             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = isMonthDropdownExpanded) },
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .menuAnchor(MenuAnchorType.PrimaryEditable, enabled = true)
+                                .menuAnchor(
+                                    ExposedDropdownMenuAnchorType.PrimaryEditable,
+                                    enabled = true
+                                )
                         )
                         ExposedDropdownMenu(
                             expanded = isMonthDropdownExpanded,
@@ -267,7 +292,7 @@ fun WalletEditScreen(
                         horizontalArrangement = Arrangement.spacedBy(4.dp)
                     ) {
                         Icon(
-                            imageVector = Icons.Default.Add,
+                            imageVector = TablerIcons.Plus,
                             contentDescription = "Add category",
                             modifier = Modifier.size(16.dp),
                             tint = MaterialTheme.colorScheme.primary
@@ -352,7 +377,7 @@ fun CategoryChip(
                 modifier = Modifier.size(16.dp)
             ) {
                 Icon(
-                    imageVector = Icons.Default.Close,
+                    imageVector = TablerIcons.X,
                     contentDescription = "Remove category",
                     modifier = Modifier.size(12.dp)
                 )

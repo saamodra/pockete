@@ -4,10 +4,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -15,6 +11,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.smdev.pockete.data.model.Category
+import compose.icons.TablerIcons
+import compose.icons.tablericons.Pencil
+import compose.icons.tablericons.Plus
+import compose.icons.tablericons.Trash
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -33,7 +33,7 @@ fun CategoryListScreen(
                 title = { Text("Categories") },
                 actions = {
                     IconButton(onClick = onAddCategory) {
-                        Icon(Icons.Default.Add, contentDescription = "Add Category")
+                        Icon(imageVector = TablerIcons.Plus, contentDescription = "Add Category")
                     }
                 }
             )
@@ -117,10 +117,10 @@ fun CategoryItem(
             }
             Row {
                 IconButton(onClick = onEdit) {
-                    Icon(Icons.Default.Edit, contentDescription = "Edit Category")
+                    Icon(TablerIcons.Pencil, contentDescription = "Edit Category")
                 }
                 IconButton(onClick = onDelete) {
-                    Icon(Icons.Default.Delete, contentDescription = "Delete Category")
+                    Icon(TablerIcons.Trash, contentDescription = "Delete Category")
                 }
             }
         }
